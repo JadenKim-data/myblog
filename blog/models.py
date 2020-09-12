@@ -1,5 +1,7 @@
 from django.conf import settings
 from django.db import models
+from mptt.fields import TreeForeignKey
+from mptt.models import MPTTModel
 # from imagekit.models import ProcessedImageField
 # from imagekit.processors import Thumbnail
 
@@ -25,10 +27,11 @@ class Post(TimeStampedModel):
     #     blank=True
     # ) PilKit에서 processor목록을 확인 가능
     photo = models.ImageField(upload_to="blog/post/photo/%Y/%m/%d", blank=True)
-    post_category = models.ForeignKey(
+    post_category = TreeForeignKey(
         'Category',
         related_name="category_post_list",
         on_delete=models.SET_NULL,
+        db_index=True,
         null=True,
     )
     tag_list = models.ManyToManyField(
@@ -41,16 +44,32 @@ class Post(TimeStampedModel):
         blank=True,
         related_name="like_post_list"
     )
-    
+
     class Meta:
         ordering = ['-id']
 
 
-class Category(TimeStampedModel):
-    name = models.CharField(max_length=30)
+class Category(MPTTModel):
+    parent = TreeForeignKey(
+        'self',
+        blank=True,
+        null=True,
+        db_index=True,
+        related_name='children',
+        on_delete=models.SET_NULL,
+    )
+    title = models.CharField(max_length=128)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['tree_id', 'lft']
+
+    class MPTTMeta:
+        ordering_insertion_by = ['title']
 
     def __str__(self):
-        return self.name
+        return self.title
 
 
 class Tag(TimeStampedModel):

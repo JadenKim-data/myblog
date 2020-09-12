@@ -4,3 +4,4 @@ djangorestframework-jwt
 pillow
 pilkit
 django-imagekit
+django-mptt
