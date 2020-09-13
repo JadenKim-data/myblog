@@ -4,6 +4,7 @@ from . import views
 
 router = DefaultRouter()
 router.register("posts", views.PostViewSet)
+router.register("categories", views.CategoryViewSet)
 
 urlpatterns = [
     path("api/", include(router.urls))

@@ -31,7 +31,7 @@ class PostSerializer(serializers.ModelSerializer):
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ['name']
+        fields = ['id', 'parent', 'title', 'created_at']
 
 
 class TagSerializer(serializers.ModelSerializer):

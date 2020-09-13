@@ -31,7 +31,6 @@ class Post(TimeStampedModel):
         'Category',
         related_name="category_post_list",
         on_delete=models.SET_NULL,
-        db_index=True,
         null=True,
     )
     tag_list = models.ManyToManyField(
@@ -54,7 +53,6 @@ class Category(MPTTModel):
         'self',
         blank=True,
         null=True,
-        db_index=True,
         related_name='children',
         on_delete=models.SET_NULL,
     )
