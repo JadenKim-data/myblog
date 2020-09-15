@@ -4,6 +4,7 @@ from rest_framework import serializers
 
 User = get_user_model()
 
+
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
 
@@ -21,4 +22,4 @@ class UserSerializer(serializers.ModelSerializer):
     #TODO: validate_phone_number : -가 입력되지 않은 번호에 대해 -를 추가
     class Meta:
         model = User
-        fields = ['pk', 'username', 'phone_number', 'gender', 'email', 'password']
+        fields = ['pk', 'avatar', 'avatar_url', 'username', 'phone_number', 'gender', 'email', 'password']
