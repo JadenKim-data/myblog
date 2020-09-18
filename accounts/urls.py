@@ -4,11 +4,11 @@ from rest_framework_jwt.views import obtain_jwt_token
 from . import views
 
 router = DefaultRouter()
-router.register("users", views.UserRetrieveUpdateDestroyViewSet)
+router.register("users", views.UserCreateRetrieveUpdateDestroyViewSet)
 
 urlpatterns = [
     # path('signup/', views.SignupAPIView.as_view(), name="signup"),
-    path('token/', obtain_jwt_token),
-    path('api/users/', views.UserCreateAPIView.as_view()),
+    path('api/token/', obtain_jwt_token),
+    # path('api/users/', views.UserCreateAPIView.as_view()),
     path('api/', include(router.urls)),
 ]
