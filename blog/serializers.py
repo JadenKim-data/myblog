@@ -1,16 +1,26 @@
+import re
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from .models import Post, Tag, Category
-
 
 User = get_user_model()
 
 
 class AuthorSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['pk', 'username', 'avatar_url', 'name']
+    avatar_url = serializers.SerializerMethodField('avatar_url_field')
+    def avatar_url_field(self, author):
+        if author.avatar_url:
+            if re.match(r"^https?://", author.avatar_url):
+                return author.avatar_url
+            if 'request' in self.context:
+                host = self.context['request'].get_host()
+                return "https://" + host + author.avatar_url
+        else:
+            return ""
 
+    class Meta:
+        model = get_user_model()
+        fields = ['pk', 'username', 'avatar_url', 'name']
 
 class PostSerializer(serializers.ModelSerializer):
     author = AuthorSerializer(read_only=True)

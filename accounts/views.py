@@ -14,12 +14,6 @@ class CreateRetrieveUpdateDestroyViewSet(
     pass
 
 
-# class UserCreateAPIView(CreateAPIView):
-#     model = get_user_model()
-#     serializer_class = UserSerializer
-#     permission_classes = [AllowAny]
-
-
 class UserCreateRetrieveUpdateDestroyViewSet(CreateRetrieveUpdateDestroyViewSet):
     queryset = get_user_model().objects.all()
     serializer_class = UserSerializer
@@ -30,15 +24,4 @@ class UserCreateRetrieveUpdateDestroyViewSet(CreateRetrieveUpdateDestroyViewSet)
         context["request"] = self.request
         return context
 
-
-# class UserRetrieveAPIView(generics.RetrieveAPIView):
-#     model = get_user_model()
-#     serializer_class = UserSerializer
-#     permission_classes = [UserPermission]
-
-
-# class UserUpdateAPIVIew(generics.UpdateAPIView):
-#     model = get_user_model()
-#     serializer_class = UserSerializer
-#     permission_classes = [UserPermission]
 
