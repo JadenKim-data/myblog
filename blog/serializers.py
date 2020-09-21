@@ -1,7 +1,7 @@
 import re
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
-from .models import Post, Tag, Category
+from .models import Post, Tag, Category, Comment
 
 User = get_user_model()
 
@@ -25,6 +25,7 @@ class AuthorSerializer(serializers.ModelSerializer):
 class PostSerializer(serializers.ModelSerializer):
     author = AuthorSerializer(read_only=True)
     is_like = serializers.SerializerMethodField('is_like_field')
+    like_user_number = serializers.SerializerMethodField('like_user_number_field')
 
     def is_like_field(self, post):
         if 'request' in self.context:
@@ -32,10 +33,13 @@ class PostSerializer(serializers.ModelSerializer):
             return post.like_user_set.filter(pk=user.pk).exists()
         return False
 
+    def like_user_number_field(self, post):
+        return post.like_user_set.count()
+
     class Meta:
         model = Post
         fields = ['id', 'author', 'title', 'content', 'photo', 'post_category',
-                  'tag_list', 'is_like', 'created_at']
+                  'tag_list', 'is_like', 'created_at', 'like_user_number',]
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -50,6 +54,15 @@ class TagSerializer(serializers.ModelSerializer):
         fields = ['name']
 
 
+class CommentSerializer(serializers.ModelSerializer):
+    like_user_number = serializers.SerializerMethodField('like_user_number_field')
+
+    def like_user_number_field(self, comment):
+        return comment.like_user_set.count()
+
+    class Meta:
+        model = Comment
+        fields = ['author', 'comment_post', 'message', 'like_user_number']
 
 
 
