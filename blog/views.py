@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from rest_framework import status, generics, mixins, viewsets
 from rest_framework.decorators import action
+from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -15,6 +16,9 @@ from .serializers import PostSerializer, TagSerializer, CategorySerializer, Comm
 class PostViewSet(ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_fields = ['title', 'content']
+    orderint = ['-id']
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
@@ -37,6 +41,18 @@ class PostViewSet(ModelViewSet):
         post.like_user_set.remove(self.request.user)
         return Response(status.HTTP_204_NO_CONTENT)
 
+
+post_list_create = PostViewSet.as_view({
+    'get': 'list',
+    'post': 'create'
+})
+
+post_retrieve_update_delete = PostViewSet.as_view({
+    'get': 'retrieve',
+    'put': 'update',
+    'patch': 'partial_update',
+    'delete': 'destroy'
+})
 
 class TagViewSet(ModelViewSet):
     queryset = Tag.objects.all()
@@ -66,16 +82,3 @@ class PostListFilteredByCategoryAPIView(ListAPIView):
         qs = super().get_queryset()
         qs = qs.filter(post_category__title=self.kwargs['category_title'])
         return qs
-
-
-# class PostListFilteredByCategoryViewSet(ListViewSet):
-#     queryset = Post.objects.all()
-#     serializer_class = PostSerializer
-
-#     def get_queryset(self):
-#         qs = super().get_queryset()
-#         category_title = self.kwargs['category_title']
-#         if Category.objects.filter(title=category_title).exists():
-#             category_pk = Category.objects.get(title=category_title).pk
-#             qs = qs.filter(post_category=category_pk)
-#         return qs

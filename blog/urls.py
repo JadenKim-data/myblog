@@ -3,12 +3,13 @@ from rest_framework.routers import DefaultRouter
 from . import views
 
 router = DefaultRouter()
-router.register("posts", views.PostViewSet)
 router.register(r"posts/(?P<post_pk>\d+)/comments", views.CommentViewSet)
 router.register("categories", views.CategoryViewSet)
 
 
 urlpatterns = [
-    re_path(r"^posts/(?P<category_title>[a-zA-Zㄱ-힣]+)/$", views.PostListFilteredByCategoryAPIView.as_view()),   #TODO: api/안에 모든 뷰가 포함되도록 작성 필요
-    path("api/", include(router.urls))
+    path("api/", include(router.urls)),
+    path("api/posts/", views.post_list_create, name='posts-list'),
+    path("api/posts/<int:pk>/", views.post_retrieve_update_delete, name='posts-detail'),
+    path("api/posts/<str:category_title>/", views.PostListFilteredByCategoryAPIView.as_view()),
 ]
